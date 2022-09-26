@@ -12,4 +12,4 @@ The search input is handled along with its validation with react-hook-form.
 
 The slider for the 24-hour weather forecast is set up with splide-js.
 
-[Open the website](vreeeme.vercel.app)
+[Open the website](https://vreeeme.vercel.app/)
