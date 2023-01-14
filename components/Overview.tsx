@@ -17,7 +17,7 @@ export default function Overview({ weather }: any) {
                     <p className="text-white capitalize">{weather.weather[0].description}</p>
                 </div>
 
-                <Image src={`/icons/animated-icons/${weather.weather[0].icon}.svg`} width="130" height="130" />
+                <Image src={`/icons/animated-icons/${weather.weather[0].icon}.svg`} width="130" height="130" alt="ICON" />
             </div>
 
             <div className="flex gap-x-1 items-center">

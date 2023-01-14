@@ -38,6 +38,7 @@ export default function Navbar({
           className="inline-flex gap-x-2 items-center"
         >
           <Image
+            alt="Logo image"
             src="/icons/animated-icons/01d.svg"
             width="50"
             height="50"

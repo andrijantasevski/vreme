@@ -18,7 +18,7 @@ export default function ForecastSingleDay({ dayOfWeek, minTemp, maxTemp, icon }:
                 <p className="text-gray-50 text-lg">{Math.floor(minTemp)}<span className="text-[#ECA914]">°C</span> / {Math.floor(maxTemp)}<span className="text-[#ECA914]">°C</span></p>
             </div>
 
-            <Image src={`/icons/animated-icons/${icon}.svg`} height="60" width="60" />
+            <Image src={`/icons/animated-icons/${icon}.svg`} height="60" width="60" alt="Weather" />
         </div>
     )
 }
