@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 @layer base {
-    body {
-        @apply bg-primary;
-        font-family: 'Inter', sans-serif;
-    }
+  body {
+    @apply bg-primary;
+    font-family: "Inter", sans-serif;
+  }
 }
 
-@layer components {
-    .bg-primary {
-        background-color: #101039;
-    }
+@layer utilities {
+  .bg-primary {
+    background-color: #101039;
+  }
 }
