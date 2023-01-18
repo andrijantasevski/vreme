@@ -1,9 +1,14 @@
+import { Forecast } from "../utils/getWeatherData";
 import ForecastSingleDay from "./ForecastSingleDay";
 
-export default function Forecast7Days({ forecast }: any) {
+interface Props {
+  forecast: Forecast;
+}
+
+const Forecast7Days: React.FC<Props> = ({ forecast }) => {
   const forecast7Days = forecast.daily
     .slice(1)
-    .map((day: any) => (
+    .map((day) => (
       <ForecastSingleDay
         key={day.dt}
         dayOfWeek={day.dt}
@@ -19,4 +24,6 @@ export default function Forecast7Days({ forecast }: any) {
       {forecast7Days}
     </section>
   );
-}
+};
+
+export default Forecast7Days;

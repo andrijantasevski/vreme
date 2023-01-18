@@ -2,12 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { useForm, SubmitHandler } from "react-hook-form";
 import { CurrentWeather, Forecast } from "../utils/getWeatherData";
-
-type Inputs = {
-  cityQuery: string;
-};
+import SearchDropdown from "./SearchDropdown";
 
 interface Props {
   fetchWeather: (cityQuery: string) => void;
@@ -24,19 +20,15 @@ const Navbar: React.FC<Props> = ({
   invalidateQueries,
   resetApp,
 }) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<Inputs>();
-  const [searchNav, setSearchNav] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    fetchWeather(data.cityQuery);
-    setSearchNav(false);
-    invalidateQueries();
-    reset();
+  const toggleSearch = () => {
+    setIsSearchOpen((prevSearch) => !prevSearch);
+  };
+
+  const goHome = () => {
+    resetApp();
+    setIsSearchOpen(false);
   };
 
   return (
@@ -44,7 +36,7 @@ const Navbar: React.FC<Props> = ({
       <nav className="pt-4 flex justify-between items-center">
         <Link
           href="/"
-          onClick={resetApp}
+          onClick={goHome}
           className="inline-flex gap-x-2 items-center"
         >
           <Image
@@ -58,31 +50,26 @@ const Navbar: React.FC<Props> = ({
 
         {weather && forecast && (
           <button
-            onClick={() => setSearchNav((prevSearch) => !prevSearch)}
-            className="bg-[#ECA914] px-3 py-2 rounded-lg h-full text-xl cursor-pointer"
+            onClick={toggleSearch}
+            className="bg-contrast px-3 py-2 rounded-lg h-full text-xl cursor-pointer"
+            aria-label={
+              isSearchOpen ? "Затвори барање на град" : "Отвори барање на град"
+            }
+            title={
+              isSearchOpen ? "Затвори барање на град" : "Отвори барање на град"
+            }
           >
-            <MagnifyingGlassIcon className="w-6 h-6 text-[#101039]" />
+            <MagnifyingGlassIcon className="w-6 h-6 text-primary" />
           </button>
         )}
       </nav>
-      {searchNav && (
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="absolute w-full py-2 pr-2 right-0 border-2 mt-4 flex bg-gray-50 rounded-lg"
-        >
-          <input
-            {...register("cityQuery", {
-              required: true,
-              pattern: /^[A-Za-z-\s]*$/,
-            })}
-            className="w-full rounded-lg bg-transparent border-0 focus:ring-0"
-            type="search"
-            placeholder="Внесете град"
-          />
-          <button className="bg-[#ECA914] text-[#101039] px-3 py-2 rounded-lg">
-            Барајте
-          </button>
-        </form>
+      {isSearchOpen && (
+        <SearchDropdown
+          isSearchOpen={isSearchOpen}
+          setIsSearchOpen={setIsSearchOpen}
+          fetchWeather={fetchWeather}
+          invalidateQueries={invalidateQueries}
+        />
       )}
     </header>
   );

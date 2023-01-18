@@ -1,13 +1,19 @@
 import Image from "next/image";
 
-export default function AdditionalWeatherSingle({
+interface Props {
+  weatherCondition: string;
+  numberWeatherCondition: number | string;
+  unitWeatherCondition?: string;
+  iconWeatherCondition: string;
+}
+const AdditionalWeatherSingle: React.FC<Props> = ({
   weatherCondition,
   numberWeatherCondition,
   unitWeatherCondition,
   iconWeatherCondition,
-}: any) {
+}) => {
   return (
-    <div className="bg-[#1D1D48] p-4 rounded-xl">
+    <div className="bg-primary-light p-4 rounded-xl">
       <div className="flex justify-between items-center">
         <Image
           src={iconWeatherCondition}
@@ -20,8 +26,10 @@ export default function AdditionalWeatherSingle({
 
       <p className="text-right text-gray-50 text-3xl">
         {numberWeatherCondition}{" "}
-        <span className="text-[#ECA914]">{unitWeatherCondition}</span>
+        <span className="text-contrast">{unitWeatherCondition}</span>
       </p>
     </div>
   );
-}
+};
+
+export default AdditionalWeatherSingle;

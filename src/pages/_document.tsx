@@ -2,7 +2,7 @@ import { NextScript, Html, Head, Main } from "next/document";
 
 const Document = () => {
   return (
-    <Html>
+    <Html lang="mk">
       <Head>
         <meta name="description" content="Временеска прогноза - лесно." />
         <link rel="icon" href="/favicon.ico" />
@@ -31,7 +31,7 @@ const Document = () => {
         />
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
-      <body>
+      <body className="bg-primary">
         <Main />
         <NextScript />
       </body>

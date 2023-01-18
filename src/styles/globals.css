@@ -4,13 +4,6 @@
 
 @layer base {
   body {
-    @apply bg-primary;
     font-family: "Inter", sans-serif;
-  }
-}
-
-@layer utilities {
-  .bg-primary {
-    background-color: #101039;
   }
 }
