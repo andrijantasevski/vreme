@@ -6,7 +6,12 @@ import { CurrentWeather, Forecast } from "../utils/getWeatherData";
 import SearchDropdown from "./SearchDropdown";
 
 interface Props {
-  fetchWeather: (cityQuery: string) => void;
+  fetchWeather: (
+    getCoordinates: (
+      cityQuery?: string
+    ) => Promise<{ latitude: number; longitude: number }>,
+    cityQuery: string
+  ) => void;
   weather: CurrentWeather | null;
   forecast: Forecast | null;
   resetApp: () => void;
