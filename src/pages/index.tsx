@@ -14,34 +14,20 @@ import getWeatherData, {
   CurrentWeather,
   Forecast,
 } from "../utils/getWeatherData";
-import getCoordinates from "../utils/getCoordinatesAPI";
+import getCoordinatesFromAPI from "../utils/getCoordinatesAPI";
+import getCoordinatesFromBrowser from "../utils/getCoordinatesFromBrowser";
 
 const Home: NextPage = () => {
   const [weather, setWeather] = useState<CurrentWeather | null>(null);
   const [forecast, setForecast] = useState<Forecast | null>(null);
   const [aqi, setAqi] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [search, setSearch] = useState(true);
 
   async function fetchWeather(cityQuery: string) {
-    setIsLoading((prevLoading) => !prevLoading);
-    setSearch((prevSearch) => !prevSearch);
-
-    function getPosition() {
-      return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-          (data) => resolve(data.coords),
-          reject
-        );
-      });
-    }
-
-    const position = await getPosition();
-
-    console.log(position);
+    setIsLoading(true);
 
     try {
-      const { latitude, longitude } = await getCoordinates(cityQuery);
+      const { latitude, longitude } = await getCoordinatesFromAPI(cityQuery);
 
       const { aqi, currentWeather, forecast } = await getWeatherData(
         latitude,
@@ -52,44 +38,31 @@ const Home: NextPage = () => {
       setForecast(forecast);
       setAqi(aqi.list[0].main.aqi);
     } catch (err) {
-      console.log(err);
-      if (err) {
-        resetApp();
-      }
+      resetApp();
     } finally {
-      setIsLoading((prevLoading) => !prevLoading);
+      setIsLoading(false);
     }
   }
 
-  function fetchLocationAndWeather() {
-    setIsLoading((prevLoading) => !prevLoading);
-    setSearch((prevSearch) => !prevSearch);
+  async function fetchLocationAndWeather() {
+    setIsLoading(true);
 
-    navigator.geolocation.getCurrentPosition(
-      async (data) => {
-        const { latitude, longitude } = data.coords;
+    try {
+      const { latitude, longitude } = await getCoordinatesFromBrowser();
 
-        try {
-          const { aqi, currentWeather, forecast } = await getWeatherData(
-            latitude,
-            longitude
-          );
+      const { aqi, currentWeather, forecast } = await getWeatherData(
+        latitude,
+        longitude
+      );
 
-          setWeather(currentWeather);
-          setForecast(forecast);
-          setAqi(aqi.list[0].main.aqi);
-        } catch (err) {
-          resetApp();
-        } finally {
-          setIsLoading((prevLoading) => !prevLoading);
-        }
-      },
-      (err) => {
-        if (err.message) {
-          resetApp();
-        }
-      }
-    );
+      setWeather(currentWeather);
+      setForecast(forecast);
+      setAqi(aqi.list[0].main.aqi);
+    } catch (err) {
+      resetApp();
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function resetApp() {
@@ -97,7 +70,12 @@ const Home: NextPage = () => {
     setForecast(null);
     setAqi(null);
     setIsLoading(false);
-    setSearch(true);
+  }
+
+  function invalidateQueries() {
+    setWeather(null);
+    setForecast(null);
+    setAqi(null);
   }
 
   return (
@@ -117,22 +95,22 @@ const Home: NextPage = () => {
           weather={weather}
           forecast={forecast}
           resetApp={resetApp}
-          setSearch={setSearch}
+          invalidateQueries={invalidateQueries}
         />
-        {search && (
+        {!isLoading && !weather && !forecast && !aqi && (
           <Searchbar
             fetchWeather={fetchWeather}
             fetchLocationAndWeather={fetchLocationAndWeather}
           />
         )}
-        {!search && !weather && !forecast && <LoadingSkeleton />}
-        {weather && forecast && <Overview weather={weather} />}
-        {weather && forecast && <Next24Hours forecast={forecast} />}
-        {weather && forecast && <Forecast7Days forecast={forecast} />}
-        {weather && forecast && (
+        {isLoading && <LoadingSkeleton />}
+        {weather && forecast && aqi && <Overview weather={weather} />}
+        {weather && forecast && aqi && <Next24Hours forecast={forecast} />}
+        {weather && forecast && aqi && <Forecast7Days forecast={forecast} />}
+        {weather && forecast && aqi && (
           <AdditionalWeather weather={weather} forecast={forecast} />
         )}
-        {weather && forecast && <AirQuality aqi={aqi} />}
+        {weather && forecast && aqi && <AirQuality aqi={aqi} />}
         <Footer />
       </div>
     </>

@@ -3,18 +3,27 @@ import Image from "next/image";
 import { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { CurrentWeather, Forecast } from "../utils/getWeatherData";
 
 type Inputs = {
   cityQuery: string;
 };
 
-export default function Navbar({
+interface Props {
+  fetchWeather: (cityQuery: string) => void;
+  weather: CurrentWeather | null;
+  forecast: Forecast | null;
+  resetApp: () => void;
+  invalidateQueries: () => void;
+}
+
+const Navbar: React.FC<Props> = ({
   fetchWeather,
-  weather,
   forecast,
+  weather,
+  invalidateQueries,
   resetApp,
-  setSearch,
-}: any) {
+}) => {
   const {
     register,
     handleSubmit,
@@ -26,9 +35,10 @@ export default function Navbar({
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     fetchWeather(data.cityQuery);
     setSearchNav(false);
-    setSearch(false);
+    invalidateQueries();
     reset();
   };
+
   return (
     <header className="relative">
       <nav className="pt-4 flex justify-between items-center">
@@ -76,4 +86,6 @@ export default function Navbar({
       )}
     </header>
   );
-}
+};
+
+export default Navbar;
