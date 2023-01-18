@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { useEffect, useState } from "react";
 
 const currentCoordinatesSchema = z.array(
   z.object({
@@ -11,7 +12,7 @@ const currentCoordinatesSchema = z.array(
 
 export type CurrentCoordinates = z.infer<typeof currentCoordinatesSchema>;
 
-export default async function getCoordinatesFromAPI(cityQuery: string) {
+export default async function getCoordinatesFromAPI(cityQuery?: string) {
   const resLocation = await fetch(
     `https://api.openweathermap.org/geo/1.0/direct?q=${cityQuery}&appid=${process.env.NEXT_PUBLIC_API_KEY}`
   );

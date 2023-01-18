@@ -1,20 +1,23 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { MapPinIcon } from "@heroicons/react/24/solid";
 import { useForm, SubmitHandler } from "react-hook-form";
+import getCoordinatesFromAPI from "../utils/getCoordinatesAPI";
+import getCoordinatesFromBrowser from "../utils/getCoordinatesFromBrowser";
 
 interface Props {
-  fetchWeather: (cityQuery: string) => void;
-  fetchLocationAndWeather: () => void;
+  fetchWeather: (
+    getCoordinates: (
+      cityQuery?: string
+    ) => Promise<{ latitude: number; longitude: number }>,
+    cityQuery?: string
+  ) => void;
 }
 
 interface FormInputs {
   cityQuery: string;
 }
 
-const SearchBar: React.FC<Props> = ({
-  fetchWeather,
-  fetchLocationAndWeather,
-}) => {
+const SearchBar: React.FC<Props> = ({ fetchWeather }) => {
   const {
     register,
     handleSubmit,
@@ -23,7 +26,7 @@ const SearchBar: React.FC<Props> = ({
   } = useForm<FormInputs>();
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    fetchWeather(data.cityQuery);
+    fetchWeather(getCoordinatesFromAPI, data.cityQuery);
 
     reset();
   };
@@ -70,7 +73,7 @@ const SearchBar: React.FC<Props> = ({
       <div>
         <button
           type="button"
-          onClick={fetchLocationAndWeather}
+          onClick={() => fetchWeather(getCoordinatesFromBrowser)}
           className="text-gray-50 flex gap-x-2 items-center"
           aria-label="Пребарајте град според вашата локација"
         >

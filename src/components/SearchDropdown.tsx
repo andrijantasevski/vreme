@@ -1,10 +1,16 @@
 import { useRef, useEffect, Dispatch, SetStateAction } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import getCoordinatesFromAPI from "../utils/getCoordinatesAPI";
 
 interface Props {
   setIsSearchOpen: Dispatch<SetStateAction<boolean>>;
   isSearchOpen: boolean;
-  fetchWeather: (cityQuery: string) => void;
+  fetchWeather: (
+    getCoordinates: (
+      cityQuery?: string
+    ) => Promise<{ latitude: number; longitude: number }>,
+    cityQuery: string
+  ) => void;
   invalidateQueries: () => void;
 }
 
@@ -28,7 +34,7 @@ const SearchDropdown: React.FC<Props> = ({
   } = useForm<FormInputs>();
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    fetchWeather(data.cityQuery);
+    fetchWeather(getCoordinatesFromAPI, data.cityQuery);
     setIsSearchOpen(false);
     invalidateQueries();
     reset();
